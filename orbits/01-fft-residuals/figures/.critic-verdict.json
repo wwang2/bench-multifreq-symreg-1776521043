@@ -1,0 +1,22 @@
+{
+  "verdict": "ACCEPT",
+  "rounds": 1,
+  "invoked_via": "Agent(subagent_type=figure-critic)",
+  "overall_comment": "Both required figures are publication-ready: clear baseline-vs-method story, metric annotated, style guide followed, reader can immediately see the method works.",
+  "figures": [
+    {
+      "path": "orbits/01-fft-residuals/figures/narrative.png",
+      "issues": [
+        {"severity": "MINOR", "issue": "Suptitle reports 'test MSE = 0.000' which rounds the exact 0.0 measurement to three decimals.", "fix": "Change suptitle metric to scientific notation or explicitly write 'test MSE \u2248 0 (target < 0.005)'."},
+        {"severity": "MINOR", "issue": "Callout arrows land on empty whitespace rather than directly on a visible wiggle crest.", "fix": "Reposition each arrow tip to a specific crest of the high-frequency oscillation."}
+      ]
+    },
+    {
+      "path": "orbits/01-fft-residuals/figures/results.png",
+      "issues": [
+        {"severity": "MINOR", "issue": "Residual panels (a) and (b) do not share a y-axis scale.", "fix": "Set sharey=True across panels (a) and (b)."},
+        {"severity": "MINOR", "issue": "FFT panel (c) \u03c9=5 callout uses small font that collides with red dashed line.", "fix": "Move label above the peak and bump fontsize to 10."}
+      ]
+    }
+  ]
+}

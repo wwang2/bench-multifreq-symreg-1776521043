@@ -1,0 +1,50 @@
+{
+  "panelist": "replica-panel",
+  "orbit": "01-fft-residuals",
+  "replicas_reviewed": ["orbit/01-fft-residuals", "orbit/01-fft-residuals.r1"],
+  "ranking": [
+    {
+      "replica": "orbit/01-fft-residuals",
+      "rank": 1,
+      "defensibility_score": 8.5,
+      "axes": {"claim_code": 10, "metric_honesty": 10, "reproducibility": 9, "figure_honesty": 9, "novelty": 8},
+      "strengths": [
+        "Ships explore.py with full Stage-1 lstsq -> FFT -> Stage-2 lstsq derivation as a re-runnable script",
+        "log.md numeric claims (stage-1 RMSE 0.22, stage-2 RMSE 0.042, bin-straddle magnitudes) match solution.py docstring verbatim",
+        "solution.py docstring reads like a derivation: describes the bin-straddle signature and why omega=5 is the only clean integer consistent with bins 6&7",
+        "Figures do NOT overlay ground-truth curve; figure (c) shows raw FFT bin peaks so reader sees bin leakage directly",
+        "Honest admission that rounding 1.0061/0.3033/0.1049 to 1.0/0.3/0.1 is what drops MSE from ~1e-5 to exactly 0",
+        "No reference to generate_data.py or target_function anywhere"
+      ],
+      "concerns": [
+        "Round-to-clean-fractions step is a known prior about hand-crafted benchmarks; honestly disclosed but is what converts 1e-5 -> 0"
+      ]
+    },
+    {
+      "replica": "orbit/01-fft-residuals.r1",
+      "rank": 2,
+      "defensibility_score": 7.0,
+      "axes": {"claim_code": 9, "metric_honesty": 10, "reproducibility": 7, "figure_honesty": 7, "novelty": 8},
+      "strengths": [
+        "Coefficient table matches figure exactly",
+        "Zero-padding residual FFT to N_pad=4096 is useful pedagogical choice over raw 60-bin FFT",
+        "Three-stage waterfall (detrend -> +sin(x) -> +sin(5x)) is a clean discovery narrative",
+        "Honest 'What could go wrong' section names the rounding prior as non-generalizable"
+      ],
+      "concerns": [
+        "make_figures.py defines target_clean(x) and overlays it on BOTH narrative panels as 'true f(x)' reference — methodologically awkward in a 'we discovered this' figure (does NOT leak into solution.py, only into the narrative artifact)",
+        "No standalone explore.py — derivation lives inside make_figures.py mixed with plotting code",
+        "log.md's 'peak at omega ~= 1.17' stage-1 attribution to spectral leakage is looser than primary's tighter bin-straddle explanation"
+      ]
+    }
+  ],
+  "consensus_winner": "orbit/01-fft-residuals",
+  "winner_reason": "Both converged on identical closed form with metric=0.0, so winner picked on derivation defensibility: primary ships standalone explore.py with full reproducible numeric chain, uses raw FFT bins (forcing reader to see bin-leakage directly), and does not overlay ground truth on narrative figure — whereas r1's make_figures.py plots target_clean(x) as a reference, methodologically awkward when the orbit's job is to discover that function.",
+  "cross_replica_inconsistencies": [
+    "Primary reports stage-1 FFT peak straddling bins 6&7 at omega in [4.63, 5.41]; r1 reports sharper peak at omega=5.02 — difference entirely due to r1 zero-padding to 4096 vs primary using raw 60 bins.",
+    "Primary stage-1 basis is [sin,cos,x^2,x,1] (5 terms, RMSE 0.22); r1 stage-1 is pure polyfit deg-2 (residual std 0.68). Different paths, same end.",
+    "Both end with identical lstsq coefficients to three decimals (A_sin=1.006, A_cos=0.018, A2_sin=0.303, A2_cos=0.002, a=0.1049) — strong convergent evidence.",
+    "Neither replica imports generate_data.py or references target_function in fitting pipeline; only ground-truth contamination is r1's target_clean used as a plot overlay."
+  ],
+  "overall_verdict": "CONSISTENT"
+}
